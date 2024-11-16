@@ -26,7 +26,7 @@ DOMEvents.Listen(eventsMap);
 
 Refer to these common event types. For custom events, see customization.
 
-```
+```js
 const commonEventTypes = {
     onclick: 'click',
     ondblclick: 'dblclick',
