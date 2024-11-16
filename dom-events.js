@@ -1,0 +1,64 @@
+
+let DOMEvents = (function() {
+  
+  const commonEventTypes = {
+    onclick: 'click',
+    ondblclick: 'dblclick',
+    onmousedown: 'mousedown',
+    onmouseup: 'mouseup',
+    onmousemove: 'mousemove',
+    onmouseover: 'mouseover',
+    onmouseout: 'mouseout',
+    ontouchstart: 'touchstart',
+  
+    onkeypress: 'keypress',
+    onkeydown: 'keydown',
+    onkeyup: 'keyup',
+    onfocus: 'focus',
+    onblur: 'blur',
+    
+    oninput: 'input',
+    onchange: 'change',
+    onsubmit: 'submit',
+    onreset: 'reset'
+  };
+
+  function notImplemented() {
+    console.error('Not implemented')
+  }
+
+  let attachListeners = function(attr, eventType, callbacks, containerEl) {
+    let elements = containerEl.querySelectorAll(`[${attr}]`);
+    for (let el of elements) {
+      let callbackFunc = callbacks?.[el.getAttribute(attr)] ?? notImplemented;
+      el.addEventListener(eventType, callbackFunc);
+    }
+  };
+  
+  function Listen(eventsMap, containerEl=document) {
+    let {groupKey} = eventsMap;
+    let infix = groupKey ? `-${groupKey}` : '';
+
+    for (let key in eventsMap) {
+      if (key == 'groupKey') continue;
+      
+      let callbackMap = eventsMap[key];
+      let eventType = callbackMap.eventType ?? getCommonEventType(key);
+
+      if (!eventType) {
+        console.error('Event type not defined:', key);
+        continue;
+      }
+      attachListeners(`data${infix}-${key}`, eventType, callbackMap, containerEl);
+    }
+  }
+  
+  function getCommonEventType(key) {
+    return commonEventTypes[key];
+  }
+  
+  return {
+    Listen,
+  };
+
+})();
